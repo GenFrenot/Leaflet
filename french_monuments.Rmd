@@ -1,0 +1,49 @@
+---
+title: "French Monuments"
+author: "Genevieve Frenot"
+date: "June 3, 2019"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+library(leaflet)
+```
+
+## Data Source
+For this Leaflet exercise we will use the list of french monuments
+from the French Governement Data file
+https://www.data.gouv.fr/en/datasets/r/c96fbd8f-c3c5-4c77-9a07-ea924d3298ac
+
+We downloaded this ods file and savec it as csv manually
+
+## Loading the data
+
+Load the list of french monuments, assuming the original ods file has been savec as csv in the working directory
+
+```{r read}
+list <- read.csv2("french_monuments.csv", sep = ",")
+```
+## Adjsuting the data
+
+Change the GPS Coordinates column names to "lon" and "lat" for Leaflet
+and transform the factors to numeric values
+```{r adjsut}
+names(list)[names(list)=="monument_lat"] <- "lat"
+names(list)[names(list)=="monument_lon"] <- "lng"
+list$lat <- as.numeric(as.character(list$lat))
+list$lng <- as.numeric(as.character(list$lng))
+
+```
+
+## Displaying the map
+
+```{r display}
+list %>% 
+  leaflet() %>%
+  addTiles() %>%
+  addMarkers(popup=list$monument_nom)
+
+```
+
+Note that the `echo = FALSE` parameter was added to the code chunk to prevent printing of the R code that generated the plot.
